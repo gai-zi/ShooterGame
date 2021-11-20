@@ -349,6 +349,9 @@ protected:
 	/*
 	 * Draw the most recently killed player if needed
 	 *
+	 * 绘制击杀信息(击杀人的屏幕)
+	 *
+	 * 
 	 * @return Returns the bottom of the message or 0 if not drawn.
 	 */
 	float DrawRecentlyKilledPlayer();

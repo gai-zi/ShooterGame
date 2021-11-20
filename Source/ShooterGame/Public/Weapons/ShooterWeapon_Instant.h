@@ -142,6 +142,7 @@ protected:
 	void ProcessInstantHit_Confirmed(const FHitResult& Impact, const FVector& Origin, const FVector& ShootDir, int32 RandomSeed, float ReticleSpread);
 
 	/** 对垃圾桶做出子弹碰撞反应 */
+	UFUNCTION(Reliable,NetMulticast)
 	void ProcessTrash(const FHitResult& Impact, const FVector& ShootDir);
 	
 	/** check if weapon should deal damage to actor */
@@ -149,7 +150,6 @@ protected:
 
 	/** handle damage */
 	void DealDamage(const FHitResult& Impact, const FVector& ShootDir);
-
 	
 	/** 经穿过墙体递减后的伤害值*/
 	UPROPERTY(Replicated)

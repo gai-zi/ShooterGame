@@ -255,7 +255,7 @@ void AShooterWeapon_Instant::ProcessInstantHit_Confirmed(const FHitResult& Impac
 	}
 }
 
-void AShooterWeapon_Instant::ProcessTrash(const FHitResult& Impact,const FVector& ShootDir)
+void AShooterWeapon_Instant::ProcessTrash_Implementation(const FHitResult& Impact, const FVector& ShootDir)
 {
 	Impact.GetComponent()->AddImpulseAtLocation(ShootDir*5000.0f,Impact.ImpactPoint);
 }

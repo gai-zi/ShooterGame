@@ -11,6 +11,7 @@
 #include "Online/ShooterPlayerState.h"
 #include "Misc/NetworkVersion.h"
 #include "OnlineSubsystemUtils.h"
+#include "UserWidget.h"
 
 #define LOCTEXT_NAMESPACE "ShooterGame.HUD.Menu"
 
@@ -597,6 +598,7 @@ void AShooterHUD::DrawHUD()
 		DrawHitIndicator();
 
 		// Draw any recent killed player - cache the used Y coord for later when we draw the large onscreen messages.
+		// 绘制击杀人
 		MessageOffset = DrawRecentlyKilledPlayer();
 
 		// No ammo message if required
@@ -856,6 +858,7 @@ void AShooterHUD::ShowDeathMessage(class AShooterPlayerState* KillerPlayerState,
 			if (KillerPlayerState == MyPlayerState && VictimPlayerState != MyPlayerState)
 			{
 				LastKillTime = GetWorld()->GetTimeSeconds();
+				//击杀信息
 				CenteredKillMessage = FText::FromString(NewMessage.VictimDesc);
 			}
 		}
