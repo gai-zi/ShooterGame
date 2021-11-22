@@ -224,6 +224,10 @@ protected:
 	UPROPERTY()
 	FCanvasIcon KillsIcon;
 
+	/** 击杀图片Widget*/
+	TSubclassOf<UUserWidget> KillWidgetClass;
+	UUserWidget* KillWidget;
+
 	/** Bigger killed icon. */
 	UPROPERTY()
 	FCanvasIcon KilledIcon;

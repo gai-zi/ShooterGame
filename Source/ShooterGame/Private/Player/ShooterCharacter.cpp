@@ -329,6 +329,7 @@ bool AShooterCharacter::Die(float KillingDamage, FDamageEvent const& DamageEvent
 	Killer = GetDamageInstigator(Killer, *DamageType);
 
 	AController* const KilledPlayer = (Controller != NULL) ? Controller : Cast<AController>(GetOwner());
+	//增加积分并通知死亡事件发生
 	GetWorld()->GetAuthGameMode<AShooterGameMode>()->Killed(Killer, KilledPlayer, this, DamageType);
 
 	NetUpdateFrequency = GetDefault<AShooterCharacter>()->NetUpdateFrequency;

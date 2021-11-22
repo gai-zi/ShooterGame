@@ -33,7 +33,13 @@ AShooterHUD::AShooterHUD(const FObjectInitializer& ObjectInitializer) : Super(Ob
 	static ConstructorHelpers::FObjectFinder<UTexture2D> HUDMainTextureOb(TEXT("/Game/UI/HUD/HUDMain"));
 	static ConstructorHelpers::FObjectFinder<UTexture2D> HUDAssets02TextureOb(TEXT("/Game/UI/HUD/HUDAssets02"));
 	static ConstructorHelpers::FObjectFinder<UTexture2D> LowHealthOverlayTextureOb(TEXT("/Game/UI/HUD/LowHealthOverlay"));
-
+	//获取蓝图资源BP_KillWidget
+	static ConstructorHelpers::FClassFinder<UUserWidget> KillWidgetCl(TEXT("WidgetBlueprint'/Game/Blueprints/UI/BP_KillWidget.BP_KillWidget_C'"));
+	if(KillWidgetCl.Succeeded())
+	{
+		KillWidgetClass = KillWidgetCl.Class;
+	}
+	
 	// Fonts are not included in dedicated server builds.
 	#if !UE_SERVER
 	{
@@ -1176,6 +1182,24 @@ float AShooterHUD::DrawRecentlyKilledPlayer()
 			LastYPos = (DrawPos - (Offset * 4 * ScaleUI)) + SizeY;
 			Canvas->DrawItem(TextItem, Canvas->OrgX + Canvas->ClipX / 2 - (KilledIcon.UL * ScaleUI + SizeX * TextScale * ScaleUI) / 2.0f + KilledIcon.UL * ScaleUI,
 				DrawPos - ( Offset * 4 * ScaleUI));
+			
+			//创建KillWidget
+			if(KillWidget)
+			{
+				KillWidget->RemoveFromParent();
+				KillWidget = nullptr;
+			}
+			if(KillWidgetClass && !KillWidget)
+			{
+				if(AShooterPlayerController* ShooterPC = Cast<AShooterPlayerController>(PlayerOwner))
+				{
+					KillWidget = CreateWidget<UUserWidget>(ShooterPC,KillWidgetClass);
+					if(KillWidget)
+					{
+						KillWidget->AddToViewport();
+					}
+				}
+			}
 		}
 	}
 	return LastYPos;

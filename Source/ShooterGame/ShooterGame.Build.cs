@@ -35,6 +35,9 @@ public class ShooterGame : ModuleRules
 				"AIModule",
 				"GameplayTasks",
 				"Gauntlet",
+				"UMG",
+				"Slate",
+				"SlateCore"
 			}
 		);
 
