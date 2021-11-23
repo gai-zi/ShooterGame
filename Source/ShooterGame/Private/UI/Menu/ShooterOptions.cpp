@@ -6,6 +6,7 @@
 #include "ShooterStyle.h"
 #include "ShooterOptionsWidgetStyle.h"
 #include "ShooterGameUserSettings.h"
+#include "UserWidget.h"
 #include "Player/ShooterPersistentUser.h"
 #include "Player/ShooterLocalPlayer.h"
 
@@ -87,6 +88,7 @@ void FShooterOptions::Construct(ULocalPlayer* InPlayerOwner)
 	AimSensitivityOption = MenuHelper::AddMenuOptionSP(OptionsItem,LOCTEXT("AimSensitivity", "AIM SENSITIVITY"),SensitivityList, this, &FShooterOptions::AimSensitivityOptionChanged);
 	InvertYAxisOption = MenuHelper::AddMenuOptionSP(OptionsItem,LOCTEXT("InvertYAxis", "INVERT Y AXIS"),OnOffList, this, &FShooterOptions::InvertYAxisOptionChanged);
 	VibrationOption = MenuHelper::AddMenuOptionSP(OptionsItem, LOCTEXT("Vibration", "VIBRATION"), OnOffList, this, &FShooterOptions::ToggleVibration);
+	FPSOption = MenuHelper::AddMenuOptionSP(OptionsItem, LOCTEXT("fps", "FPS"), OnOffList, this, &FShooterOptions::ToggleFPS);
 	
 	MenuHelper::AddMenuItemSP(OptionsItem,LOCTEXT("ApplyChanges", "APPLY CHANGES"), this, &FShooterOptions::OnApplySettings);
 
@@ -95,6 +97,8 @@ void FShooterOptions::Construct(ULocalPlayer* InPlayerOwner)
     
     //Default vibration to On.
 	VibrationOption->SelectedMultiChoice = 1;
+	//默认FPS开启显示
+	FPSOption->SelectedMultiChoice = 1;
 
 	UserSettings = CastChecked<UShooterGameUserSettings>(GEngine->GetGameUserSettings());
 	bFullScreenOpt = UserSettings->GetFullscreenMode();
@@ -117,9 +121,11 @@ void FShooterOptions::Construct(ULocalPlayer* InPlayerOwner)
 		SensitivityOpt = PersistentUser->GetAimSensitivity();
 		GammaOpt = PersistentUser->GetGamma();
 		bVibrationOpt = PersistentUser->GetVibration();
+		bFPSOpt = PersistentUser->GetFPS();
 	}
 	else
 	{
+		bFPSOpt = true;
 		bVibrationOpt = true;
 		bInvertYAxisOpt = false;
 		SensitivityOpt = 1.0f;
@@ -161,6 +167,7 @@ void FShooterOptions::ApplySettings()
 		PersistentUser->SetInvertedYAxis(bInvertYAxisOpt);
 		PersistentUser->SetGamma(GammaOpt);
 		PersistentUser->SetVibration(bVibrationOpt);
+		PersistentUser->SetFPS(bFPSOpt);
 		PersistentUser->TellInputAboutKeybindings();
 
 		PersistentUser->SaveIfDirty();
@@ -177,6 +184,7 @@ void FShooterOptions::ApplySettings()
 	UserSettings->ApplySettings(false);
 
 	OnApplyChanges.ExecuteIfBound();
+	
 }
 
 void FShooterOptions::TellInputAboutKeybindings()
@@ -293,12 +301,14 @@ void FShooterOptions::UpdateOptions()
 		SensitivityOpt = PersistentUser->GetAimSensitivity();
 		GammaOpt = PersistentUser->GetGamma();
 		bVibrationOpt = PersistentUser->GetVibration();
+		bFPSOpt = PersistentUser->GetFPS();
 	} 
 
 	InvertYAxisOption->SelectedMultiChoice =  GetCurrentMouseYAxisInvertedIndex();
 	AimSensitivityOption->SelectedMultiChoice = GetCurrentMouseSensitivityIndex();
 	GammaOption->SelectedMultiChoice = GetCurrentGammaIndex();
 	VibrationOption->SelectedMultiChoice = bVibrationOpt ? 1 : 0;
+	FPSOption->SelectedMultiChoice = bFPSOpt ? 1 : 0;
 
 	GammaOptionChanged(GammaOption, GammaOption->SelectedMultiChoice);
 #if PLATFORM_DESKTOP
@@ -413,6 +423,21 @@ void FShooterOptions::ToggleVibration(TSharedPtr<FShooterMenuItem> MenuItem, int
 			// and can't store the vibration setting.
 		}
     }
+}
+
+void FShooterOptions::ToggleFPS(TSharedPtr<FShooterMenuItem> MenuItem, int32 MultiOptionIndex)
+{
+	bFPSOpt = MultiOptionIndex > 0 ? true : false;
+	APlayerController* BaseController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(PlayerOwner->GetWorld(), GetOwnerUserIndex()));
+	AShooterPlayerController* ShooterPlayerController = Cast<AShooterPlayerController>(UGameplayStatics::GetPlayerController(PlayerOwner->GetWorld(), GetOwnerUserIndex()));
+	ensure(BaseController);
+	if(BaseController)
+	{
+		if (ShooterPlayerController)
+		{
+			ShooterPlayerController->bFPSEnabled = bFPSOpt;
+		}
+	}
 }
 
 void FShooterOptions::InvertYAxisOptionChanged(TSharedPtr<FShooterMenuItem> MenuItem, int32 MultiOptionIndex)

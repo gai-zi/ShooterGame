@@ -183,7 +183,7 @@ public:
 
 	/** Informs that player fragged someone */
 	void OnKill();
-
+	
 	/** Cleans up any resources necessary to return to main menu.  Does not modify GameInstance state. */
 	virtual void HandleReturnToMainMenu();
 
@@ -193,6 +193,7 @@ public:
 	// end AShooterPlayerController-specific
 
 	virtual void PreClientTravel(const FString& PendingURL, ETravelType TravelType, bool bIsSeamlessTravel) override;
+
 
 protected:
 
@@ -212,9 +213,10 @@ protected:
 	UPROPERTY(Transient)
 	uint8 bGodMode : 1;
 
+	
 	/** should produce force feedback? */
 	uint8 bIsVibrationEnabled : 1;
-
+	
 	/** if set, gameplay related actions (movement, weapn usage, etc) are allowed */
 	uint8 bAllowGameActions : 1;
 
@@ -256,6 +258,7 @@ protected:
 	bool bHasInitializedInputComponent;
 
 public:
+	
 	virtual void TickActor(float DeltaTime, enum ELevelTick TickType, FActorTickFunction& ThisTickFunction) override;
 	//End AActor interface
 
@@ -325,6 +328,10 @@ public:
 	/** threshold trigger fires */
 	UPROPERTY(config)
 	float FireTriggerThreshold;
+
+	/** 是否显示FPS*/
+	UPROPERTY()
+	bool bFPSEnabled;
 
 private:
 

@@ -228,6 +228,10 @@ protected:
 	TSubclassOf<UUserWidget> KillWidgetClass;
 	UUserWidget* KillWidget;
 
+	/** FPS Widget*/
+	TSubclassOf<UUserWidget> FPSWidgetClass;
+	UUserWidget* FPSWidget;
+	
 	/** Bigger killed icon. */
 	UPROPERTY()
 	FCanvasIcon KilledIcon;
@@ -324,7 +328,7 @@ protected:
 	 * @param TimeSeconds		The time to get a string for.
 	 */
 	FString GetTimeString(float TimeSeconds);
-
+	
 	/** Draws weapon HUD. */
 	void DrawWeaponHUD();
 

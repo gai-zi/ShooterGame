@@ -22,6 +22,7 @@
 #include "Sound/SoundNodeLocalPlayer.h"
 #include "AudioThread.h"
 #include "OnlineSubsystemUtils.h"
+#include "UserWidget.h"
 
 #define  ACH_FRAG_SOMEONE	TEXT("ACH_FRAG_SOMEONE")
 #define  ACH_SOME_KILLS		TEXT("ACH_SOME_KILLS")
@@ -70,6 +71,8 @@ AShooterPlayerController::AShooterPlayerController(const FObjectInitializer& Obj
 	bHasQueriedPlatformStats = false;
 	bHasQueriedPlatformAchievements = false;
 	bHasInitializedInputComponent = false;
+
+	bFPSEnabled = true;
 }
 
 void AShooterPlayerController::SetupInputComponent()

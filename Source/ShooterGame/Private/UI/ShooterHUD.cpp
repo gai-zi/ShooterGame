@@ -39,7 +39,12 @@ AShooterHUD::AShooterHUD(const FObjectInitializer& ObjectInitializer) : Super(Ob
 	{
 		KillWidgetClass = KillWidgetCl.Class;
 	}
-	
+	//获取蓝图资源BP_FPSWidget
+	static ConstructorHelpers::FClassFinder<UUserWidget> FPSWidgetCl(TEXT("WidgetBlueprint'/Game/Blueprints/UI/BP_FPSWidget.BP_FPSWidget_C'"));
+	if(FPSWidgetCl.Succeeded())
+	{
+		FPSWidgetClass = FPSWidgetCl.Class;
+	}
 	// Fonts are not included in dedicated server builds.
 	#if !UE_SERVER
 	{
@@ -480,7 +485,6 @@ void AShooterHUD::DrawKills()
 	TextItem.Scale = FVector2D( TextScale * ScaleUI, TextScale * ScaleUI );
 	Canvas->DrawItem( TextItem, KillsPosX + KillsBg.UL * ScaleUI - (BoxWidth + SizeX * TextScale * ScaleUI) /2,
 		KillsPosY + (KillsBg.VL* ScaleUI - SizeY * TextScale * ScaleUI) / 2 );
-
 }
 
 void AShooterHUD::NotifyOutOfAmmo()
@@ -547,6 +551,7 @@ void AShooterHUD::DrawHUD()
 	}
 
 	// net mode
+	//网络模组，确定左上角字符串信息
 	if (GetNetMode() != NM_Standalone)
 	{
 		FString NetModeDesc = (GetNetMode() == NM_Client) ? TEXT("Client") : TEXT("Server");
@@ -563,16 +568,14 @@ void AShooterHUD::DrawHUD()
 					NetModeDesc += Session->GetSessionIdStr();
 				}
 			}
-
 		}
-
 		NetModeDesc += FString::Printf( TEXT( "\nVersion: %i, %s, %s" ), FNetworkVersion::GetNetworkCompatibleChangelist(), UTF8_TO_TCHAR(__DATE__), UTF8_TO_TCHAR(__TIME__) );
-
+		
 		DrawDebugInfoString(NetModeDesc, Canvas->OrgX + Offset*ScaleUI, Canvas->OrgY + 5*Offset*ScaleUI, true, true, HUDLight);
 	}
 
 	DrawMatchTimerAndPosition();
-
+	
 	float MessageOffset = (Canvas->ClipY / 4.0)* ScaleUI;
 	if (MatchState == EShooterMatchState::Playing)
 	{
@@ -622,13 +625,25 @@ void AShooterHUD::DrawHUD()
 			TextItem.Scale = FVector2D( TextScale * ScaleUI, TextScale * ScaleUI );
 			TextItem.FontRenderInfo = ShadowedFont;
 			TextItem.SetColor(FLinearColor(0.75f, 0.125f, 0.125f, Alpha ));
-			AddMatchInfoString(TextItem);			
+			AddMatchInfoString(TextItem);		
+		}
+		//显示FPS
+		if(!FPSWidget)
+		{
+			FPSWidget = CreateWidget<UUserWidget>(MyPC,FPSWidgetClass);	
+		}
+		if(FPSWidget->IsInViewport() && MyPC->bFPSEnabled == false)
+		{
+			FPSWidget->RemoveFromViewport();
+		}
+		if(!FPSWidget->IsInViewport() && MyPC->bFPSEnabled == true)
+		{
+			FPSWidget->AddToViewport();
 		}
 	}
 
 	// Render the info messages such as wating to respawn - these will be drawn below any 'killed player' message.
 	ShowInfoItems(MessageOffset, 1.0f);
-	
 }
 
 void AShooterHUD::DrawDebugInfoString(const FString& Text, float PosX, float PosY, bool bAlignLeft, bool bAlignTop, const FColor& TextColor)

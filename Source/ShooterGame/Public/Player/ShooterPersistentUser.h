@@ -59,6 +59,12 @@ public:
 		return bVibrationOpt;
 	}
 
+	/** 是否FPS开关启动？ */
+	FORCEINLINE bool GetFPS() const
+	{
+		return bFPSOpt;
+	}
+	
 	/** Is the y axis inverted? */
 	FORCEINLINE bool GetInvertedYAxis() const
 	{
@@ -67,6 +73,8 @@ public:
 
 	/** Setter for controller vibration option */
 	void SetVibration(bool bVibration);
+
+	void SetFPS(bool bFPS);
 
 	/** Setter for inverted y axis */
 	void SetInvertedYAxis(bool bInvert);
@@ -164,6 +172,9 @@ protected:
 
 	UPROPERTY()
 	bool bVibrationOpt;
+
+	UPROPERTY()
+	bool bFPSOpt;
 
 private:
 	/** Internal.  True if data is changed but hasn't been saved. */

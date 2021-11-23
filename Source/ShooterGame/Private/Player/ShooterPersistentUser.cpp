@@ -13,7 +13,8 @@ UShooterPersistentUser::UShooterPersistentUser(const FObjectInitializer& ObjectI
 void UShooterPersistentUser::SetToDefaults()
 {
 	bIsDirty = false;
-
+	
+	bFPSOpt = true;
 	bVibrationOpt = true;
 	bInvertedYAxis = false;
 	AimSensitivity = 1.0f;
@@ -214,6 +215,15 @@ void UShooterPersistentUser::SetVibration(bool bVibration)
 	bVibrationOpt = bVibration;
 
 }
+
+void UShooterPersistentUser::SetFPS(bool bFPS)
+{
+	//检验保存数据是否同步
+	bIsDirty |= bFPSOpt != bFPS;
+
+	bFPSOpt = bFPS;
+}
+
 
 void UShooterPersistentUser::SetInvertedYAxis(bool bInvert)
 {

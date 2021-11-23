@@ -19,6 +19,7 @@ class UShooterGameUserSettings;
 class FShooterOptions : public TSharedFromThis<FShooterOptions>
 {
 public:
+	
 	/** sets owning player controller */
 	void Construct(ULocalPlayer* InPlayerOwner);
 
@@ -71,8 +72,14 @@ protected:
 	/** aim sensitivity option changed handler */
 	void AimSensitivityOptionChanged(TSharedPtr<FShooterMenuItem> MenuItem, int32 MultiOptionIndex);
 
-	/** controller vibration toggle handler */
+	/** controller vibration toggle handler
+	 *
+	 * 震动开关控制器
+	 */
 	void ToggleVibration(TSharedPtr<FShooterMenuItem> MenuItem, int32 MultiOptionIndex);
+	
+	/** FPS开关控制器*/
+	void ToggleFPS(TSharedPtr<FShooterMenuItem> MenuItem, int32 MultiOptionIndex);
 
 	/** invert y axis option changed handler */
 	void InvertYAxisOptionChanged(TSharedPtr<FShooterMenuItem> MenuItem, int32 MultiOptionIndex);
@@ -104,8 +111,14 @@ protected:
 	/** Owning player controller */
 	ULocalPlayer* PlayerOwner;
 
-	/** holds vibration option menu item */
+	/** holds vibration option menu item
+	 *
+	 * "震动"选项菜单项
+	 */
 	TSharedPtr<FShooterMenuItem> VibrationOption;
+
+	/** FPS显示选项*/
+	TSharedPtr<FShooterMenuItem> FPSOption;
 
 	/** holds invert y axis option menu item */
 	TSharedPtr<FShooterMenuItem> InvertYAxisOption;
@@ -140,8 +153,14 @@ protected:
 	/** full screen setting set in options */
 	EWindowMode::Type bFullScreenOpt;
 
-	/** controller vibration setting set in options */
+	/** controller vibration setting set in options
+	 *
+	 * 震动控制器的值
+	 */
 	uint8 bVibrationOpt : 1;
+
+	/** 是否开启FPS显示 */
+	uint8 bFPSOpt : 1;
 
 	/** invert mouse setting set in options */
 	uint8 bInvertYAxisOpt : 1;
