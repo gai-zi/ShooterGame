@@ -841,6 +841,7 @@ void SShooterMenuWidget::ChangeOption(int32 MoveBy)
 		if ( CurIndex + MoveBy >= MinIndex && CurIndex + MoveBy <= MaxIndex)
 		{
 			MenuItem->SelectedMultiChoice += MoveBy;
+			//触发代理执行函数
 			MenuItem->OnOptionChanged.ExecuteIfBound(MenuItem, MenuItem->SelectedMultiChoice);
 			FSlateApplication::Get().PlaySound(MenuStyle->OptionChangeSound, GetOwnerUserIndex());
 		}
