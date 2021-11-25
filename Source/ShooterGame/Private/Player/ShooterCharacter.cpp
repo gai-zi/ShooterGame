@@ -421,6 +421,7 @@ void AShooterCharacter::OnDeath(float KillingDamage, struct FDamageEvent const& 
 	else
 	{
 		SetRagdollPhysics();
+		UE_LOG(LogTemp,Warning,TEXT("%s"),*Cast<UMaterialInstance>(GetMesh()->GetMaterial(0))->GetName());
 	}
 
 	// disable collisions on capsule
