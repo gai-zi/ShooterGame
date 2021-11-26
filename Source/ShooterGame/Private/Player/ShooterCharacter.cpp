@@ -1186,8 +1186,8 @@ void AShooterCharacter::OnStartJump()
 		if(JumpCurrentCount == 0)	bPressedJump = true;
 		else if(JumpCurrentCount == 1 && bCanDoubleJump)
 		{
-			bPressedJump = true;
 			GetCharacterMovement()->JumpZVelocity = 1000.0f;
+			bPressedJump = true;
 		}
 	}
 }

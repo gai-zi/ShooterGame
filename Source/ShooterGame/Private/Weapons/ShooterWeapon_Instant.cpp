@@ -59,13 +59,13 @@ FHitResult AShooterWeapon_Instant::HavePawnBackWall(const FHitResult& Impact, co
 	   FLinearColor::Red,
 	   20.0f
    );
-	//至少有三个元素，自身Pawn、墙体、敌人Pawn
+	//射线至少存在3个穿透的物体
 	if( Hits.IsValidIndex(2) )
 	{
-		//射击第一个触碰的为墙体
+		//射线穿透的第一个物体为墙体
 		if(Hits[1].GetActor()->Tags.Contains(TEXT("Wall")))
 		{
-			//射击第二个触碰的为Pawn
+			//射线穿透的第一个物体为Pawn，证明可以进行穿透伤害
 			if(Hits[2].GetActor()->Tags.Contains(TEXT("Player")))
 			{
 				FHitResult Hit; 
@@ -74,7 +74,7 @@ FHitResult AShooterWeapon_Instant::HavePawnBackWall(const FHitResult& Impact, co
 				//做差，从而得出子弹穿过墙体的长度
 				DamageDecrease(FVector::Distance(Hits[1].Location,Hit.Location));
 				
-				/*DrawDebugPoint(GetWorld(),Hits[2].Location,50.0f,FColor::Orange,false,10.0f);
+				/*DrawDebugPoint(GetWorld(),Hits[1].Location,50.0f,FColor::Orange,false,10.0f);
 				DrawDebugPoint(GetWorld(),Hit.Location,50.0f,FColor::Orange,false,10.0f);*/
 				bDecreaseDamage = true;
 				return Hits[2];
@@ -222,7 +222,7 @@ void AShooterWeapon_Instant::ProcessInstantHit(const FHitResult& Impact, const F
 
 void AShooterWeapon_Instant::ProcessInstantHit_Confirmed(const FHitResult& Impact, const FVector& Origin, const FVector& ShootDir, int32 RandomSeed, float ReticleSpread)
 {
-	//处理垃圾桶Hit反馈，未能与服务器通信
+	//判断是否击中的为垃圾桶，处理垃圾桶受击反馈
 	if(Impact.bBlockingHit)
 	{
 		if(Impact.GetActor()->Tags.Contains(TEXT("Trash")) && Impact.GetActor()->IsRootComponentMovable())
@@ -285,7 +285,6 @@ void AShooterWeapon_Instant::DealDamage(const FHitResult& Impact, const FVector&
 	//判断是否进行伤害递减
 	if(bDecreaseDamage)
 	{
-		UE_LOG(LogTemp,Warning,TEXT("Yes!,AfterDecreaseDamage : %f"),AfterDecreaseDamage);
 		PointDmg.Damage = AfterDecreaseDamage;
 	}
 	else
@@ -301,7 +300,8 @@ void AShooterWeapon_Instant::DealDamage(const FHitResult& Impact, const FVector&
 
 void AShooterWeapon_Instant::DamageDecrease(float CrossLength)
 {
-	AfterDecreaseDamage = InstantConfig.HitDamage - CrossLength / 10.0f; 
+	AfterDecreaseDamage = InstantConfig.HitDamage - CrossLength / 10.0f;
+	//UE_LOG(LogTemp,Warning,TEXT("子弹在墙体中运动的长度为：%.2f; 子弹伤害由15衰减为%d"),CrossLength,AfterDecreaseDamage)
 }
 
 void AShooterWeapon_Instant::OnBurstFinished()

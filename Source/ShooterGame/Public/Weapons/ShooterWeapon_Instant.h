@@ -158,6 +158,7 @@ protected:
 	/** 穿墙是否进行伤害递减*/
 	UPROPERTY(Replicated)
 	bool bDecreaseDamage;
+	
 	/** 伤害递减
 	 * @return 递减后的值
 	 */
