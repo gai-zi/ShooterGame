@@ -417,11 +417,12 @@ void AShooterCharacter::OnDeath(float KillingDamage, struct FDamageEvent const& 
 		// Use a local timer handle as we don't need to store it for later but we don't need to look for something to clear
 		FTimerHandle TimerHandle;
 		GetWorldTimerManager().SetTimer(TimerHandle, this, &AShooterCharacter::SetRagdollPhysics, FMath::Max(0.1f, TriggerRagdollTime), false);
+
+		LetPawnDissolve();
 	}
 	else
 	{
 		SetRagdollPhysics();
-		UE_LOG(LogTemp,Warning,TEXT("%s"),*Cast<UMaterialInstance>(GetMesh()->GetMaterial(0))->GetName());
 	}
 
 	// disable collisions on capsule
