@@ -363,9 +363,12 @@ protected:
 	/** current targeting state */
 	UPROPERTY(Transient, Replicated)
 	uint8 bIsTargeting : 1;
-
+	
+	float FirstJumpVelocityZ = 720.0f;
+	float SecondJumpVelocityZ = 1000.0f;
+	
 	/** 是否能进行二段跳 */
-	UPROPERTY(VisibleDefaultsOnly, Category = Pawn)
+	UPROPERTY(Replicated, VisibleDefaultsOnly, Category = Pawn)
 	bool bCanDoubleJump;
 	
 	/** modifier for max movement speed */

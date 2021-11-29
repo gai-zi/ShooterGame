@@ -1186,7 +1186,7 @@ void AShooterCharacter::OnStartJump()
 		if(JumpCurrentCount == 0)	bPressedJump = true;
 		else if(JumpCurrentCount == 1 && bCanDoubleJump)
 		{
-			GetCharacterMovement()->JumpZVelocity = 1000.0f;
+			GetCharacterMovement()->JumpZVelocity = SecondJumpVelocityZ;
 			bPressedJump = true;
 		}
 	}
@@ -1199,7 +1199,7 @@ void AShooterCharacter::OnStopJump()
 	if(JumpCurrentCount == 2)
 	{
 		bCanDoubleJump = false;
-		GetCharacterMovement()->JumpZVelocity = 720.0f;
+		GetCharacterMovement()->JumpZVelocity = FirstJumpVelocityZ;
 	}
 }
 
@@ -1228,6 +1228,7 @@ void AShooterCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > &
 
 	// only to local owner: weapon change requests are locally instigated, other clients don't need it
 	DOREPLIFETIME_CONDITION(AShooterCharacter, Inventory, COND_OwnerOnly);
+	DOREPLIFETIME_CONDITION(AShooterCharacter, bCanDoubleJump, COND_OwnerOnly);
 
 	// everyone except local owner: flag change is locally instigated
 	DOREPLIFETIME_CONDITION(AShooterCharacter, bIsTargeting, COND_SkipOwner);
