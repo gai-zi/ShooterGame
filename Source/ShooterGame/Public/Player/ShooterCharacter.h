@@ -322,14 +322,14 @@ class AShooterCharacter : public ACharacter
 
 	/** Update the team color of all player meshes. */
 	void UpdateTeamColorsAllMIDs();
-private:
 
-	/** pawn mesh: 1st person view */
-	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
-	USkeletalMeshComponent* Mesh1P;
 public:
 	UFUNCTION(BlueprintImplementableEvent)
 		void LetPawnDissolve();
+
+	/** pawn mesh: 1st person view */
+	UPROPERTY(BlueprintReadWrite, Category = Mesh)
+	USkeletalMeshComponent* Mesh1P;
 protected:
 	/** socket or bone name for attaching weapon mesh */
 	UPROPERTY(EditDefaultsOnly, Category = Inventory)
