@@ -553,9 +553,11 @@ protected:
 
 	/** Builds list of points to check for pausing replication for a connection*/
 	void BuildPauseReplicationCheckPoints(TArray<FVector>& RelevancyCheckPoints);
-
+	
+	UFUNCTION(BlueprintCallable)
 	void TogglePerspective();
 
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="CameraChange")
 	bool IsFPP;
 
 public:

@@ -285,9 +285,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category=Config)
 	FWeaponData WeaponConfig;
 
-private:
+public:
 	/** weapon mesh: 1st person view */
-	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
+	UPROPERTY(BlueprintReadWrite, Category=Mesh)
 	USkeletalMeshComponent* Mesh1P;
 
 	/** weapon mesh: 3rd person view */

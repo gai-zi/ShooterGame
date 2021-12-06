@@ -196,18 +196,19 @@ void AShooterCharacter::UpdatePawnMeshes()
 	//TPP不需要看见人物mesh和枪械mesh
 	Mesh1P->VisibilityBasedAnimTickOption = !bFirstPerson ? EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered : EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 	Mesh1P->SetOwnerNoSee(!bFirstPerson);
+	//切换武器可见性
 	if(Inventory.Num()>=2)
 	{
 		for (int32 i = 0; i < Inventory.Num(); i++)
 		{
 			UE_LOG(LogTemp,Warning,TEXT("Weapon set owner no see"));
+			Inventory[i]->Mesh1P->SetOwnerNoSee(!bFirstPerson);
+			Inventory[i]->Mesh3P->SetOwnerNoSee(bFirstPerson);
 			//Inventory[i]->GetWeaponMesh()->SetOwnerNoSee(!bFirstPerson);
 		}
 	}
-	
 	GetMesh()->VisibilityBasedAnimTickOption = bFirstPerson ? EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered : EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 	GetMesh()->SetOwnerNoSee(bFirstPerson);
-
 }
 
 void AShooterCharacter::UpdateTeamColors(UMaterialInstanceDynamic* UseMID)
