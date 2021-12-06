@@ -196,15 +196,19 @@ void AShooterCharacter::UpdatePawnMeshes()
 	//TPP不需要看见人物mesh和枪械mesh
 	Mesh1P->VisibilityBasedAnimTickOption = !bFirstPerson ? EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered : EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 	Mesh1P->SetOwnerNoSee(!bFirstPerson);
-	//切换武器可见性
-	if(Inventory.Num()>=2)
+	if( this->IsLocallyControlled() == true )
 	{
-		for (int32 i = 0; i < Inventory.Num(); i++)
+		//切换武器可见性
+		if(Inventory.Num()>=2)
 		{
-			UE_LOG(LogTemp,Warning,TEXT("Weapon set owner no see"));
-			Inventory[i]->Mesh1P->SetOwnerNoSee(!bFirstPerson);
-			Inventory[i]->Mesh3P->SetOwnerNoSee(bFirstPerson);
-			//Inventory[i]->GetWeaponMesh()->SetOwnerNoSee(!bFirstPerson);
+			for (int32 i = 0; i < Inventory.Num(); i++)
+			{
+				if(Inventory[i])
+				{
+					Inventory[i]->Mesh1P->SetOwnerNoSee(!bFirstPerson);
+					Inventory[i]->Mesh3P->SetOwnerNoSee(bFirstPerson);
+				}
+			}
 		}
 	}
 	GetMesh()->VisibilityBasedAnimTickOption = bFirstPerson ? EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered : EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
