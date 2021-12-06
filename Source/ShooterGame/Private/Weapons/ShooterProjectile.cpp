@@ -36,9 +36,9 @@ AShooterProjectile::AShooterProjectile(const FObjectInitializer& ObjectInitializ
 	MovementComp->InitialSpeed = 2000.0f;
 	MovementComp->MaxSpeed = 2000.0f;
 	MovementComp->bRotationFollowsVelocity = true;
-	MovementComp->bShouldBounce = true;
-	MovementComp->Bounciness = 0.5f;
-	MovementComp->ProjectileGravityScale = 0.5f;
+	MovementComp->bShouldBounce = false;
+	//MovementComp->Bounciness = 0.5f;
+	//MovementComp->ProjectileGravityScale = 0.5f;
 
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.TickGroup = TG_PrePhysics;

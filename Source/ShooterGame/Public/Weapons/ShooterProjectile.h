@@ -65,7 +65,7 @@ protected:
 	/** update velocity on client */
 	virtual void PostNetReceiveVelocity(const FVector& NewVelocity) override;
 
-protected:
+public:
 	/** Returns MovementComp subobject **/
 	FORCEINLINE UProjectileMovementComponent* GetMovementComp() const { return MovementComp; }
 	/** Returns CollisionComp subobject **/

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ShooterWeapon_Projectile.h"
 #include "GameFramework/Pawn.h"
 #include "Turret.generated.h"
 
@@ -16,6 +17,8 @@ private:
 	float MinYaw = -90.0f;
 	float MaxYaw = 90.0f;
 	float RotationSpeed = 1.0f;
+	float scale = 0.5f;
+	float FireRate = 1.5f;
 	
 public:
 	ATurret();
@@ -42,6 +45,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly,Category=Projectile)
 	TSubclassOf<class AAMissileProjectile> MissileClass;
 	
+	//要生成的发射物类
+	TSubclassOf<AShooterProjectile> ProjectileClass;
+
+	//控制发射速率参数
+	bool bCanFire = true;
+	float LastFireTime = 0.0f;
+	
 public:	
 	virtual void Tick(float DeltaTime) override;
 	
@@ -49,8 +59,6 @@ public:
 
 	UFUNCTION()
 	void TurnRight(float Value);
-	UFUNCTION()
-	void TurnUp(float Value);
 
 	UFUNCTION()
 	void Fire();
