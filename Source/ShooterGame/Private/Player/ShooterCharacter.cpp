@@ -9,6 +9,7 @@
 #include "Animation/AnimInstance.h"
 #include "Sound/SoundNodeLocalPlayer.h"
 #include "AudioThread.h"
+#include "Turret.h"
 
 static int32 NetVisualizeRelevancyTestPoints = 0;
 FAutoConsoleVariableRef CVarNetVisualizeRelevancyTestPoints(
@@ -345,7 +346,12 @@ bool AShooterCharacter::Die(float KillingDamage, FDamageEvent const& DamageEvent
 
 	AController* const KilledPlayer = (Controller != NULL) ? Controller : Cast<AController>(GetOwner());
 	//增加积分并通知死亡事件发生
-	GetWorld()->GetAuthGameMode<AShooterGameMode>()->Killed(Killer, KilledPlayer, this, DamageType);
+	if(DamageCauser->Tags.Contains(FName("Missile")))
+	{
+		GetWorld()->GetAuthGameMode<AShooterGameMode>()->Killed(Killer, KilledPlayer, nullptr, DamageType);
+	}
+	else
+		GetWorld()->GetAuthGameMode<AShooterGameMode>()->Killed(Killer, KilledPlayer, this, DamageType);
 
 	NetUpdateFrequency = GetDefault<AShooterCharacter>()->NetUpdateFrequency;
 	GetCharacterMovement()->ForceReplicationUpdate();

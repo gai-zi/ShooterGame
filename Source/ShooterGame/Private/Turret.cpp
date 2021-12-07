@@ -80,7 +80,7 @@ void ATurret::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-void ATurret::TurnRight(float Value) 
+void ATurret::TurnRight(float Value)
 {
 	//沿着Z轴旋转roll
 	float Base2Yaw = Base2->GetRelativeRotation().Yaw;
@@ -89,6 +89,7 @@ void ATurret::TurnRight(float Value)
 		Base2->SetRelativeRotation(FRotator(0.0f,Base2Yaw+Value,0.0f));
 	}
 }
+
 
 void ATurret::Fire()
 {
@@ -103,7 +104,7 @@ void ATurret::Fire()
 	FVector LuncherWorldLocation = Launcher->GetRelativeLocation();
 
 	FRotator MissileWorldRotator = BaseWorldRotation + Base2WorldRotation;
-	FVector MissileWorldLocation = BoxWorldLocation + BaseWorldLocation + Base2WorldLocation + LuncherWorldLocation;
+	FVector MissileWorldLocation = BoxWorldLocation + BaseWorldLocation + Base2WorldLocation + LuncherWorldLocation - FVector(0.0f,0.0f,30.0f);
 	
 	UWorld* World = GetWorld();
 	

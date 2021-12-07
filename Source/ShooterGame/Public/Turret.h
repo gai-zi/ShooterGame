@@ -23,6 +23,10 @@ private:
 public:
 	ATurret();
 
+	//控制此炮台的人物
+	UPROPERTY(BlueprintReadWrite)
+	AShooterCharacter* CurrentShooterCharacter;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -51,6 +55,7 @@ protected:
 	//控制发射速率参数
 	bool bCanFire = true;
 	float LastFireTime = 0.0f;
+
 	
 public:	
 	virtual void Tick(float DeltaTime) override;

@@ -301,15 +301,19 @@ void AShooterGameMode::Killed(AController* Killer, AController* KilledPlayer, AP
 {
 	AShooterPlayerState* KillerPlayerState = Killer ? Cast<AShooterPlayerState>(Killer->PlayerState) : NULL;
 	AShooterPlayerState* VictimPlayerState = KilledPlayer ? Cast<AShooterPlayerState>(KilledPlayer->PlayerState) : NULL;
-
+	
 	if (KillerPlayerState && KillerPlayerState != VictimPlayerState)
 	{
-		KillerPlayerState->ScoreKill(VictimPlayerState, KillScore);
+		if(KilledPawn == nullptr)
+			KillerPlayerState->ScoreKill(VictimPlayerState, KillScore * 2); 
+		else
+			KillerPlayerState->ScoreKill(VictimPlayerState, KillScore); 
 		KillerPlayerState->InformAboutKill(KillerPlayerState, DamageType, VictimPlayerState);
 	}
 
 	if (VictimPlayerState)
 	{
+		VictimPlayerState->ScoreDeath(KillerPlayerState, DeathScore);
 		VictimPlayerState->ScoreDeath(KillerPlayerState, DeathScore);
 		VictimPlayerState->BroadcastDeath(KillerPlayerState, DamageType, VictimPlayerState);
 	}

@@ -592,7 +592,8 @@ void AShooterHUD::DrawHUD()
 		else
 		{
 			// respawn
-			FString Text = LOCTEXT("WaitingForRespawn", "WAITING FOR RESPAWN").ToString();
+			//FString Text = LOCTEXT("WaitingForRespawn", "WAITING FOR RESPAWN").ToString();
+			FString Text = LOCTEXT("WaitingForRespawn", "").ToString();
 			FCanvasTextItem TextItem( FVector2D::ZeroVector, FText::GetEmpty(), BigFont, HUDDark );
 			TextItem.EnableShadow( FLinearColor::Black );
 			TextItem.Text = FText::FromString( Text );
