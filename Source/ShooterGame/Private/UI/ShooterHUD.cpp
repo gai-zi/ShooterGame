@@ -333,15 +333,13 @@ void AShooterHUD::DrawHealth()
 	Canvas->SetDrawColor(FColor::White);
 	const float HealthPosX = (Canvas->ClipX - HealthBarBg.UL * ScaleUI) / 2;
 	const float HealthPosY = Canvas->ClipY - (Offset + HealthBarBg.VL) * ScaleUI;
-	Canvas->DrawIcon(HealthBarBg, HealthPosX, HealthPosY, ScaleUI);
+	Canvas->DrawIcon(HealthBarBg, HealthPosX, HealthPosY, ScaleUI);	//Y轴+50变下面去了
 	const float HealthAmount =  FMath::Min(1.0f,MyPawn->Health / MyPawn->GetMaxHealth());
-
 	FCanvasTileItem TileItem(FVector2D(HealthPosX,HealthPosY), HealthBar.Texture->Resource, 
 							 FVector2D(HealthBar.UL * HealthAmount  * ScaleUI, HealthBar.VL * ScaleUI), FLinearColor::White);
 	MakeUV(HealthBar, TileItem.UV0, TileItem.UV1, HealthBar.U, HealthBar.V, HealthBar.UL * HealthAmount, HealthBar.VL);  
 	TileItem.BlendMode = SE_BLEND_Translucent;
 	Canvas->DrawItem(TileItem);
-
 	Canvas->DrawIcon(HealthIcon,HealthPosX + Offset * ScaleUI, HealthPosY + (HealthBar.VL - HealthIcon.VL) / 2.0f * ScaleUI, ScaleUI);
 }
 

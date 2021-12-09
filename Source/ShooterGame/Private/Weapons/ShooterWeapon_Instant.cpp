@@ -4,6 +4,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Weapons/ShooterWeapon_Instant.h"
 
+#include <Actor.h>
 #include <string>
 
 #include "Particles/ParticleSystemComponent.h"
@@ -36,7 +37,17 @@ void AShooterWeapon_Instant::FireWeapon()
 	const FHitResult Impact = WeaponTrace(StartTrace, EndTrace);
 	/*查询墙后是否有pawn*/
 	FHitResult FinalImpact = HavePawnBackWall(Impact,StartTrace,EndTrace,ShootDir);
-	
+
+	//墙面依旧留下弹痕
+	if(Impact.IsValidBlockingHit() && FinalImpact.IsValidBlockingHit())
+		if(Impact.GetActor()->GetName().Compare(FinalImpact.GetActor()->GetName()))
+		{
+			// play FX locally
+			if (GetNetMode() != NM_DedicatedServer)
+			{
+				SpawnImpactEffects(Impact);
+			}
+		}
 	ProcessInstantHit(FinalImpact, StartTrace, ShootDir, RandomSeed, CurrentSpread);
 	CurrentFiringSpread = FMath::Min(InstantConfig.FiringSpreadMax, CurrentFiringSpread + InstantConfig.FiringSpreadIncrement);
 }
@@ -59,28 +70,47 @@ FHitResult AShooterWeapon_Instant::HavePawnBackWall(const FHitResult& Impact, co
 	   FLinearColor::Red,
 	   20.0f
    );
-	//射线至少存在3个穿透的物体
-	if( Hits.IsValidIndex(2) )
+	
+	/*
+	for(int i=0;i<Hits.Num();i++)
+		UE_LOG(LogTemp,Warning,TEXT("%s"),*Hits[i].GetActor()->GetName());
+	UE_LOG(LogTemp,Warning,TEXT("---------------------"));
+	*/
+	
+	int SelfNum = 0;
+	//检测到几个自己，确定SelfNum值
+	for(int i=0;i<Hits.Num();i++)
 	{
-		//射线穿透的第一个物体为墙体
-		if(Hits[1].GetActor()->Tags.Contains(TEXT("Wall")))
+		//前序碰到的都是自己
+		if(!Hits[i].GetActor()->GetName().Compare(this->GetPawnOwner()->GetName()))
 		{
-			//射线穿透的第一个物体为Pawn，证明可以进行穿透伤害
-			if(Hits[2].GetActor()->Tags.Contains(TEXT("Player")))
-			{
-				FHitResult Hit; 
-				//从击中敌人Pawn的位置向出发点发射Trace，	HitTrace即可
-				GetWorld()->LineTraceSingleByChannel(Hit, Hits[2].Location, Start, COLLISION_WEAPON);
-				//做差，从而得出子弹穿过墙体的长度
-				DamageDecrease(FVector::Distance(Hits[1].Location,Hit.Location));
-				
-				/*DrawDebugPoint(GetWorld(),Hits[1].Location,50.0f,FColor::Orange,false,10.0f);
-				DrawDebugPoint(GetWorld(),Hit.Location,50.0f,FColor::Orange,false,10.0f);*/
-				bDecreaseDamage = true;
-				return Hits[2];
-			}
+			SelfNum++;
 		}
+		else
+			break;
 	}
+	//检测是否直接击中墙体，若无直接返回原Hit结果
+	if(Hits.Num() >= SelfNum-1)
+		if(!Hits[SelfNum].GetActor()->Tags.Contains(TEXT("Wall")))
+		{
+			//UE_LOG(LogTemp,Warning,TEXT("Can't Get WALL"));
+			return Impact;
+		}
+	if(Hits.Num() >= SelfNum)
+		if(Hits[SelfNum + 1].GetActor()->Tags.Contains(TEXT("Player")))
+		{
+			//UE_LOG(LogTemp,Warning,TEXT("Get Actor!!!"));
+			FHitResult Hit; 
+			//从击中敌人Pawn的位置向出发点发射Trace，	HitTrace即可
+			GetWorld()->LineTraceSingleByChannel(Hit, Hits[SelfNum+1].Location, Start, COLLISION_WEAPON);
+			//做差，从而得出子弹穿过墙体的长度
+			DamageDecrease(FVector::Distance(Hits[SelfNum].Location,Hit.Location));
+					
+			/*DrawDebugPoint(GetWorld(),Hits[1].Location,50.0f,FColor::Orange,false,10.0f);
+			DrawDebugPoint(GetWorld(),Hit.L ocation,50.0f,FColor::Orange,false,10.0f);*/
+			bDecreaseDamage = true;
+			return Hits[SelfNum + 1];
+		}
 	if(AfterDecreaseDamage <= 0.0f)
 	{
 		bDecreaseDamage = false;
