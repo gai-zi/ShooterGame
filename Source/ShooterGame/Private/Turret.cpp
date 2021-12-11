@@ -53,7 +53,6 @@ ATurret::ATurret()
 void ATurret::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 
@@ -77,12 +76,10 @@ void ATurret::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	//设置鼠标绑定
 	PlayerInputComponent->BindAxis("Turn",this,&ATurret::TurnRight);
 	//PlayerInputComponent->BindAxis("LookUp",this,&ATurret::TurnUp);
-
 }
 
 void ATurret::TurnRight(float Value)
 {
-	//沿着Z轴旋转roll
 	float Base2Yaw = Base2->GetRelativeRotation().Yaw;
 	if(Value!=0.0f)
 	{

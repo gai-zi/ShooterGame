@@ -39,10 +39,9 @@ void AShooterWeapon_Instant::FireWeapon()
 	FHitResult FinalImpact = HavePawnBackWall(Impact,StartTrace,EndTrace,ShootDir);
 
 	//墙面依旧留下弹痕
-	if(Impact.IsValidBlockingHit() && FinalImpact.IsValidBlockingHit())
+	if(Impact.GetActor() && FinalImpact.GetActor())
 		if(Impact.GetActor()->GetName().Compare(FinalImpact.GetActor()->GetName()))
 		{
-			// play FX locally
 			if (GetNetMode() != NM_DedicatedServer)
 			{
 				SpawnImpactEffects(Impact);
@@ -71,15 +70,10 @@ FHitResult AShooterWeapon_Instant::HavePawnBackWall(const FHitResult& Impact, co
 	   20.0f
    );
 	
-	/*
-	for(int i=0;i<Hits.Num();i++)
-		UE_LOG(LogTemp,Warning,TEXT("%s"),*Hits[i].GetActor()->GetName());
-	UE_LOG(LogTemp,Warning,TEXT("---------------------"));
-	*/
-	
 	int SelfNum = 0;
+	int HitNum = Hits.Num();
 	//检测到几个自己，确定SelfNum值
-	for(int i=0;i<Hits.Num();i++)
+	for(int i=0;i<HitNum;i++)
 	{
 		//前序碰到的都是自己
 		if(!Hits[i].GetActor()->GetName().Compare(this->GetPawnOwner()->GetName()))
@@ -90,27 +84,29 @@ FHitResult AShooterWeapon_Instant::HavePawnBackWall(const FHitResult& Impact, co
 			break;
 	}
 	//检测是否直接击中墙体，若无直接返回原Hit结果
-	if(Hits.Num() >= SelfNum-1)
+	if(HitNum - 1 >= SelfNum)
+	{
 		if(!Hits[SelfNum].GetActor()->Tags.Contains(TEXT("Wall")))
 		{
 			//UE_LOG(LogTemp,Warning,TEXT("Can't Get WALL"));
 			return Impact;
 		}
-	if(Hits.Num() >= SelfNum)
-		if(Hits[SelfNum + 1].GetActor()->Tags.Contains(TEXT("Player")))
+		if(HitNum -1  >= SelfNum + 1)
 		{
-			//UE_LOG(LogTemp,Warning,TEXT("Get Actor!!!"));
-			FHitResult Hit; 
-			//从击中敌人Pawn的位置向出发点发射Trace，	HitTrace即可
-			GetWorld()->LineTraceSingleByChannel(Hit, Hits[SelfNum+1].Location, Start, COLLISION_WEAPON);
-			//做差，从而得出子弹穿过墙体的长度
-			DamageDecrease(FVector::Distance(Hits[SelfNum].Location,Hit.Location));
-					
-			/*DrawDebugPoint(GetWorld(),Hits[1].Location,50.0f,FColor::Orange,false,10.0f);
-			DrawDebugPoint(GetWorld(),Hit.L ocation,50.0f,FColor::Orange,false,10.0f);*/
-			bDecreaseDamage = true;
-			return Hits[SelfNum + 1];
+			if(Hits[SelfNum + 1].GetActor()->Tags.Contains(TEXT("Player")))
+			{
+				//UE_LOG(LogTemp,Warning,TEXT("Get Actor!!!"));
+				FHitResult Hit; 
+				//从击中敌人Pawn的位置向出发点发射Trace，	HitTrace即可
+				GetWorld()->LineTraceSingleByChannel(Hit, Hits[SelfNum+1].Location, Start, COLLISION_WEAPON);
+				//做差，从而得出子弹穿过墙体的长度
+				DamageDecrease(FVector::Distance(Hits[SelfNum].Location,Hit.Location));
+				bDecreaseDamage = true;
+				return Hits[SelfNum + 1];
+			}	
 		}
+	}
+	
 	if(AfterDecreaseDamage <= 0.0f)
 	{
 		bDecreaseDamage = false;

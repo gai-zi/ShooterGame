@@ -16,9 +16,6 @@ private:
 	float MaxPitch = 90.0f;
 	float MinYaw = -90.0f;
 	float MaxYaw = 90.0f;
-	float RotationSpeed = 1.0f;
-	float scale = 0.5f;
-	float FireRate = 1.5f;
 	
 public:
 	ATurret();
@@ -35,7 +32,7 @@ protected:
 	//最下层底座
 	UPROPERTY(EditAnywhere,Category=Component)
 	UStaticMeshComponent* Base;
-	//Yaw可转底座
+	//可转底座
 	UPROPERTY(EditAnywhere,Category=Component)
 	UStaticMeshComponent* Base2;
 	
@@ -44,10 +41,6 @@ protected:
 
 	UPROPERTY(EditAnywhere,Category=Component)
 	UCameraComponent* OurCamera;
-
-	//要生成的发射物类
-	UPROPERTY(EditDefaultsOnly,Category=Projectile)
-	TSubclassOf<class AAMissileProjectile> MissileClass;
 	
 	//要生成的发射物类
 	TSubclassOf<AShooterProjectile> ProjectileClass;
@@ -55,7 +48,9 @@ protected:
 	//控制发射速率参数
 	bool bCanFire = true;
 	float LastFireTime = 0.0f;
-
+	float RotationSpeed = 1.0f;
+	float scale = 0.5f;
+	float FireRate = 1.5f;
 	
 public:	
 	virtual void Tick(float DeltaTime) override;
